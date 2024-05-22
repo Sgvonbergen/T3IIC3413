@@ -303,7 +303,10 @@ std::any QueryPreprocessor::visitBetweenExpr(IIC3413DBParser::BetweenExprContext
     if (col_expr->get_datatype() != lhs_type) {
         throw QueryException("Column and range must have equal DataTypes: " + ctx->getText());
     }
-
+    if (!lhs->get_columns().empty() || !rhs->get_columns().empty()) {
+        throw QueryException("Range cannot be Column Reference: " + ctx->getText());
+    }
+    
     current_expr = std::make_unique<ExprPlanBetween>(
         std::move(col_expr),
         std::move(lhs),
