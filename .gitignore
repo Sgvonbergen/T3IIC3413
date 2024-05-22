@@ -3,3 +3,7 @@ build
 
 third_party/boost_1_81
 .antlr
+
+.DS_Store
+third_party/boost_1_81/*
+.vscode/*
