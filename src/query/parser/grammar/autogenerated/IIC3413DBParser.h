@@ -14,10 +14,11 @@ public:
   enum {
     AND = 1, AS = 2, CREATE = 3, DISTINCT = 4, FROM = 5, INSERT = 6, INTO = 7, 
     INT = 8, LIKE = 9, LIMIT = 10, OR = 11, SELECT = 12, STR = 13, TABLE = 14, 
-    VALUES = 15, WHERE = 16, EQ = 17, NE = 18, GT = 19, LT = 20, GE = 21, 
-    LE = 22, COMMA = 23, ASTERISK = 24, MINUS = 25, SLASH = 26, PLUS = 27, 
-    DOT = 28, L_PAR = 29, R_PAR = 30, INTEGER = 31, STRING = 32, IDENTIFIER = 33, 
-    WHITE_SPACE = 34, COMMENT_INPUT = 35, LINE_COMMENT = 36, UNRECOGNIZED = 37
+    VALUES = 15, WHERE = 16, BETWEEN = 17, EQ = 18, NE = 19, GT = 20, LT = 21, 
+    GE = 22, LE = 23, COMMA = 24, ASTERISK = 25, MINUS = 26, SLASH = 27, 
+    PLUS = 28, DOT = 29, L_PAR = 30, R_PAR = 31, INTEGER = 32, STRING = 33, 
+    IDENTIFIER = 34, WHITE_SPACE = 35, COMMENT_INPUT = 36, LINE_COMMENT = 37, 
+    UNRECOGNIZED = 38
   };
 
   enum {
@@ -25,8 +26,9 @@ public:
     RuleSelectQuery = 4, RuleSchema = 5, RuleDatatype = 6, RuleSelectStatement = 7, 
     RuleColumnList = 8, RuleFromStatement = 9, RuleTableList = 10, RuleTable = 11, 
     RuleWhereStatement = 12, RuleAndExpr = 13, RuleSimpleExpr = 14, RuleComparisonExpr = 15, 
-    RuleLikeExpr = 16, RuleColumnOrConstant = 17, RuleColumn = 18, RuleConstant = 19, 
-    RuleIdentifier = 20, RuleLimitStatement = 21, RuleKeyword = 22
+    RuleLikeExpr = 16, RuleBetweenExpr = 17, RuleColumnOrConstant = 18, 
+    RuleColumn = 19, RuleConstant = 20, RuleIdentifier = 21, RuleLimitStatement = 22, 
+    RuleKeyword = 23
   };
 
   explicit IIC3413DBParser(antlr4::TokenStream *input);
@@ -63,6 +65,7 @@ public:
   class SimpleExprContext;
   class ComparisonExprContext;
   class LikeExprContext;
+  class BetweenExprContext;
   class ColumnOrConstantContext;
   class ColumnContext;
   class ConstantContext;
@@ -297,6 +300,7 @@ public:
   public:
     SimpleExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
+    BetweenExprContext *betweenExpr();
     ComparisonExprContext *comparisonExpr();
     LikeExprContext *likeExpr();
 
@@ -342,6 +346,23 @@ public:
   };
 
   LikeExprContext* likeExpr();
+
+  class  BetweenExprContext : public antlr4::ParserRuleContext {
+  public:
+    BetweenExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    ColumnContext *column();
+    antlr4::tree::TerminalNode *BETWEEN();
+    std::vector<ColumnOrConstantContext *> columnOrConstant();
+    ColumnOrConstantContext* columnOrConstant(size_t i);
+    antlr4::tree::TerminalNode *AND();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  BetweenExprContext* betweenExpr();
 
   class  ColumnOrConstantContext : public antlr4::ParserRuleContext {
   public:
@@ -434,6 +455,7 @@ public:
     antlr4::tree::TerminalNode *TABLE();
     antlr4::tree::TerminalNode *VALUES();
     antlr4::tree::TerminalNode *WHERE();
+    antlr4::tree::TerminalNode *BETWEEN();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;

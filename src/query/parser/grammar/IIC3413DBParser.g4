@@ -32,13 +32,16 @@ whereStatement: WHERE andExpr;
 
 andExpr: simpleExpr (AND simpleExpr)*;
 
-simpleExpr: comparisonExpr
+simpleExpr: betweenExpr
+|           comparisonExpr
 |           likeExpr
 ;
 
 comparisonExpr: columnOrConstant (op=('=='|'!='|'<'|'>'|'<='|'>=') columnOrConstant)?;
 
 likeExpr: column LIKE STRING;
+
+betweenExpr: column BETWEEN columnOrConstant AND columnOrConstant;
 
 columnOrConstant: column | constant;
 
@@ -66,4 +69,5 @@ keyword: AND
 |        TABLE
 |        VALUES
 |        WHERE
+|        BETWEEN
 ;

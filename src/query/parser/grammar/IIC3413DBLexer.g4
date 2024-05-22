@@ -20,6 +20,7 @@ STR:      S T R;
 TABLE:    T A B L E;
 VALUES:   V A L U E S;
 WHERE:    W H E R E;
+BETWEEN:  B E T W E E N;
 
 EQ: '==';
 NE: '!=';
